@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-//const { Video } = require("../models/User");
+const { Video } = require("../models/Video");
 
 const { auth } = require("../middleware/auth");
 const multer = require('multer');
@@ -45,6 +45,18 @@ router.post('/uploads', (req, res) => {
     // url : 파일 업로드 하면 업로드 폴더 안에 들어감
   })
 
+})
+
+router.post('/uploadVideo', (req, res) => {
+  // 비디오 정보들 저장
+
+  const video = new Video(req.body) // 모든 정보를 담음 . 클라이언트에서 받은 모든 variables가 req.body에 담김
+
+  video.save((err, doc) => {
+    if(err) return res.json({success: false, err})
+    res.status(200).json({success:true})
+  }) // mongoDB에 저장
+  
 })
 
 router.post('/thumbnail', (req, res) => {

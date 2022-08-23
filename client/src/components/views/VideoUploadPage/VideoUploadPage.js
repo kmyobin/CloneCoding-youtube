@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {Typography, Button, Form, message, Input, Icon} from 'antd';
 import Dropzone from "react-dropzone";
 import Axios from "axios";
+import {useSelector} from 'react-redux';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -19,9 +20,9 @@ const CategoryOptions = [
 ]
 
 
-function VideoUploadPage(){
+function VideoUploadPage(props){
   // state : state 안에다 value들을 저장함
-
+  const user = useSelector(state => state.user); // state에 있는 user의 모든 정보를 가져옴
   const [VideoTitle, setVideoTitle] = useState("")
   const [Description, setDescription] = useState("")
   const [Private, setPrviate] = useState(0)
@@ -29,6 +30,7 @@ function VideoUploadPage(){
   const [FilePath, setFilePath] = useState("")
   const [Duration, setDuration] = useState("")
   const [ThumbnailPath, setThumbnailPath] = useState("");
+ 
 
 
   const onTitleChange = (e) => {
@@ -89,6 +91,38 @@ function VideoUploadPage(){
     })
   }
 
+  const onSubmit = (e) => {
+    e.preventDefault(); // 우리가 하고 시픈 event를 하기 위해
+
+    const variables = { // id를 redux를 통해 가져옴
+      writer : user.userData._id, 
+      title: VideoTitle, 
+      description: Description, 
+      privacy: Private, 
+      filePath: FilePath,
+      category : Category, 
+      duration : Duration, 
+      thumbnail: ThumbnailPath 
+    }
+
+    Axios.post('/api/video/uploadVideo', variables) 
+    .then(response => {
+      if(response.data.success){
+        console.log(response.data)
+
+        message.success('성공적으로 업로드 하였습니다.')
+
+        setTimeout(() => {
+          props.history.push('/') // landingpage로 이동 
+        }, 3000)
+      }
+      else{
+        alert('비디오 업로드에 실패했습니다.')
+      }
+    })
+
+  }
+
 
   return (
     <div style={{maxWidth : '700px', margin:'2rem auto'}}>
@@ -96,7 +130,7 @@ function VideoUploadPage(){
         <Title level={2}>Upload Video</Title>
       </div>
 
-      <Form onSubmit>
+      <Form onSubmit={onSubmit}>
         <div style={{display:'flex', justifyContent:'space-between'}}>
           {/*Drop Zone*/}
           <Dropzone
@@ -160,7 +194,7 @@ function VideoUploadPage(){
         <br/>
         <br/>
 
-        <Button type="primary" size="large" onClick>
+        <Button type="primary" size="large" onClick={onSubmit}>
           Submit          
         </Button>
 
