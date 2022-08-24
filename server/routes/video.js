@@ -113,5 +113,15 @@ router.get('/getVideos', (req, res) => {
   
 })
 
+router.post('/getVideoDetail', (req, res) => {
+  Video.findOne({"_id": req.body.videoId}) // client에서 받은 Id로 찾음
+  .populate('writer') // writer의 모든 정보를 가져옴
+  .exec((err, videoDetail) => {
+    if(err) return res.status(400).send(err)
+    return res.status(200).json({success: true, videoDetail})
+  })
+  
+  
+})
 
 module.exports = router;

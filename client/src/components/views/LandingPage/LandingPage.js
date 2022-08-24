@@ -33,12 +33,15 @@ function LandingPage() {
 
         return <Col key={index} lg={6} md={8} xs={24}>
         <a href={`/video/post/${video._id}`}> 
-            <div style={{position: 'relative'}}>
-                <img style={{width:'100%'}} src={`http://localhost:5000/${video.thumbnail}`} alt="thumbnail"/>
-                <div className='duration'>
-                    <span>{minutes} : {seconds}</span>
+            {/*새롭게 추가됨*/}
+            <a href={`/video/${video._id}`}>
+                <div style={{position: 'relative'}}>
+                    <img style={{width:'100%'}} src={`http://localhost:5000/${video.thumbnail}`} alt="thumbnail"/>
+                    <div className='duration'>
+                        <span>{minutes} : {seconds}</span>
+                    </div>
                 </div>
-            </div>
+            </a>
         </a>
             
         <br />
@@ -58,6 +61,7 @@ function LandingPage() {
 
     return (
         <div style={{width: '85%', margin: '3rem auto'}}>
+
             <Title level={2}> Recommended </Title>
             <hr />
             <Row gutter={[32,16]}>
